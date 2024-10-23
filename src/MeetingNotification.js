@@ -23,13 +23,16 @@ const MeetingNotification = ({ userId }) => {
 
   const acceptMeeting = async () => {
     try {
-      const response = await fetch(`/api/meet/accept`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ roomId: message.split("room: ")[1] }),
-      });
+      const response = await fetch(
+        `https://unbiased-evenly-worm.ngrok-free.app/api/meet/accept`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ roomId: message.split("room: ")[1] }),
+        }
+      );
       if (response.ok) {
         alert("Meeting accepted!");
       }

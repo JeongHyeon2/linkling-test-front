@@ -7,11 +7,14 @@ const MeetingRequest = ({ fromUserId, toUserId }) => {
 
   const sendMeetingRequest = async () => {
     try {
-      const response = await axios.post("/api/meet/request", {
-        fromUserId,
-        toUserId,
-        roomId: "", // 서버에서 생성
-      });
+      const response = await axios.post(
+        "https://unbiased-evenly-worm.ngrok-free.app/api/meet/request",
+        {
+          fromUserId,
+          toUserId,
+          roomId: "", // 서버에서 생성
+        }
+      );
       if (response.data.success) {
         setMessage("Meeting request sent!");
       } else {
