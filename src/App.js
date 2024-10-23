@@ -1,25 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import MeetingRequest from "./MeetingRequest";
+import MeetingNotification from "./MeetingNotification";
 
-function App() {
+const App = () => {
+  const fromUserId = "A"; // A 사용자 ID
+  const toUserId = "B"; // B 사용자 ID
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Meeting App</h1>
+      <div>
+        <MeetingRequest fromUserId={fromUserId} toUserId={toUserId} />
+      </div>
+      <div>
+        <MeetingNotification userId={toUserId} />
+      </div>
     </div>
   );
-}
+};
 
 export default App;
