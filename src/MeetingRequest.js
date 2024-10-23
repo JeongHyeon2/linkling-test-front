@@ -1,37 +1,48 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const MeetingRequest = () => {
+  const [socket, setSocket] = useState(null);
   const [message, setMessage] = useState("");
-  const userId = "A"; // 사용자 A의 ID
-  const roomId = "123"; // 방 ID, 고정 값이거나 동적으로 설정 가능
+  const [input, setInput] = useState("");
 
   useEffect(() => {
-    const socket = new WebSocket(
-      `wss://unbiased-evenly-worm.ngrok-free.app/voice-chat?roomId=${roomId}`
+    const ws = new WebSocket(
+      "wss://unbiased-evenly-worm.ngrok-free.app/noti?userId=A"
     );
 
-    socket.onopen = () => {
+    ws.onopen = () => {
       console.log("WebSocket connection established for user A");
-      socket.send("A has connected to room " + roomId);
     };
 
-    socket.onmessage = (event) => {
-      setMessage(event.data); // 서버로부터 받은 메시지
-    };
-
-    socket.onclose = () => {
+    ws.onclose = () => {
       console.log("WebSocket connection closed for user A");
     };
 
+    setSocket(ws);
+
     return () => {
-      socket.close(); // 컴포넌트가 unmount될 때 WebSocket 연결 종료
+      if (ws) ws.close();
     };
   }, []);
 
+  const sendMessage = () => {
+    if (socket) {
+      socket.send(`TO:B|MESSAGE:${input}`);
+      setMessage("Message sent to user B");
+    }
+  };
+
   return (
     <div>
-      <h2>User A (Room {roomId})</h2>
-      <p>Message from Server: {message}</p>
+      <h2>User A: Send Notification</h2>
+      <input
+        type="text"
+        placeholder="Enter message"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+      />
+      <button onClick={sendMessage}>Send Message to B</button>
+      <p>{message}</p>
     </div>
   );
 };
