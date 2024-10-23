@@ -4,9 +4,9 @@ const WebSocketComponent = () => {
   const [userId, setUserId] = useState("");
   const [toUserId, setToUserId] = useState("");
   const [socket, setSocket] = useState(null);
-  const [message, setMessage] = useState("");
   const [inputMessage, setInputMessage] = useState("");
   const [connected, setConnected] = useState(false);
+  const [messages, setMessages] = useState([]); // 받은 메시지 저장
 
   useEffect(() => {
     if (connected && userId) {
@@ -17,11 +17,14 @@ const WebSocketComponent = () => {
 
       ws.onopen = () => {
         console.log(`WebSocket connection established for user ${userId}`);
-        setMessage(`Connected as user ${userId}`);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          `Connected as user ${userId}`,
+        ]);
       };
 
       ws.onmessage = (event) => {
-        setMessage(event.data); // 서버로부터 받은 메시지 처리
+        setMessages((prevMessages) => [...prevMessages, event.data]); // 서버로부터 받은 메시지 저장
       };
 
       ws.onclose = () => {
@@ -48,6 +51,7 @@ const WebSocketComponent = () => {
   const sendMessage = () => {
     if (socket && inputMessage) {
       socket.send(`TO:${toUserId}|MESSAGE:${inputMessage}`); // 대상 사용자에게 메시지 전송
+      setMessages((prevMessages) => [...prevMessages, `You: ${inputMessage}`]); // 자신이 보낸 메시지도 추가
       setInputMessage(""); // 메시지 입력 초기화
     }
   };
@@ -83,7 +87,20 @@ const WebSocketComponent = () => {
             placeholder="Enter message"
           />
           <button onClick={sendMessage}>Send Message to {toUserId}</button>
-          <p>{message}</p>
+
+          <h3>Messages:</h3>
+          <div
+            style={{
+              border: "1px solid black",
+              height: "200px",
+              overflowY: "scroll",
+              padding: "10px",
+            }}
+          >
+            {messages.map((msg, index) => (
+              <p key={index}>{msg}</p>
+            ))}
+          </div>
         </div>
       )}
     </div>
