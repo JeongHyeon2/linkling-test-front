@@ -3,17 +3,15 @@ import MeetingRequest from "./MeetingRequest";
 import MeetingNotification from "./MeetingNotification";
 
 const App = () => {
-  const fromUserId = "A"; // A 사용자 ID
-  const toUserId = "B"; // B 사용자 ID
-
   return (
     <div>
-      <h1>Meeting App</h1>
-      <div>
-        <MeetingRequest fromUserId={fromUserId} toUserId={toUserId} />
-      </div>
-      <div>
-        <MeetingNotification userId={toUserId} />
+      <h1>Matchmaking App</h1>
+      <div style={{ display: "flex", justifyContent: "space-around" }}>
+        {/* 사용자 A */}
+        <MeetingRequest userId="A" />
+
+        {/* 사용자 B */}
+        <MeetingNotification userId="B" />
       </div>
     </div>
   );

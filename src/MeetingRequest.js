@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from "react";
 
-const MeetingRequest = () => {
+const MeetingRequest = ({ userId }) => {
   const [socket, setSocket] = useState(null);
   const [message, setMessage] = useState("");
-  const [input, setInput] = useState("");
 
   useEffect(() => {
     const ws = new WebSocket(
-      "wss://unbiased-evenly-worm.ngrok-free.app/noti?userId=A"
+      `wss://unbiased-evenly-worm.ngrok-free.app/match?userId=${userId}`
     );
 
     ws.onopen = () => {
-      console.log("WebSocket connection established for user A");
+      console.log(`WebSocket connection established for user ${userId}`);
+    };
+
+    ws.onmessage = (event) => {
+      setMessage(event.data); // B로부터 매칭 수락 여부를 받음
     };
 
     ws.onclose = () => {
-      console.log("WebSocket connection closed for user A");
+      console.log(`WebSocket connection closed for user ${userId}`);
     };
 
     setSocket(ws);
@@ -23,25 +26,19 @@ const MeetingRequest = () => {
     return () => {
       if (ws) ws.close();
     };
-  }, []);
+  }, [userId]);
 
-  const sendMessage = () => {
+  const sendMatchRequest = () => {
     if (socket) {
-      socket.send(`TO:B|MESSAGE:${input}`);
-      setMessage("Message sent to user B");
+      socket.send(`MATCH:B`);
+      setMessage("Match request sent to user B.");
     }
   };
 
   return (
     <div>
-      <h2>User A: Send Notification</h2>
-      <input
-        type="text"
-        placeholder="Enter message"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
-      <button onClick={sendMessage}>Send Message to B</button>
+      <h2>User {userId}: Send Match Request</h2>
+      <button onClick={sendMatchRequest}>Send Match Request to B</button>
       <p>{message}</p>
     </div>
   );
