@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from "react";
 
-const MeetingRequest = ({ userId }) => {
+const MeetingRequestA = () => {
+  const userId = "A"; // 고정된 A 사용자
   const [socket, setSocket] = useState(null);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
+    // WebSocket 서버에 연결
     const ws = new WebSocket(
-      `wss://unbiased-evenly-worm.ngrok-free.app/match?userId=${userId}`
+      `wss://unbiased-evenly-worm.ngrok-free.app/join?userId=${userId}`
     );
 
     ws.onopen = () => {
       console.log(`WebSocket connection established for user ${userId}`);
+      setMessage(`Connected as user ${userId}`);
     };
 
     ws.onmessage = (event) => {
-      setMessage(event.data); // B로부터 매칭 수락 여부를 받음
+      setMessage(event.data); // 서버로부터 받은 메시지 처리
     };
 
     ws.onclose = () => {
@@ -23,25 +26,18 @@ const MeetingRequest = ({ userId }) => {
 
     setSocket(ws);
 
+    // 컴포넌트가 언마운트될 때 WebSocket을 닫음
     return () => {
       if (ws) ws.close();
     };
   }, [userId]);
 
-  const sendMatchRequest = () => {
-    if (socket) {
-      socket.send(`MATCH:B`);
-      setMessage("Match request sent to user B.");
-    }
-  };
-
   return (
     <div>
-      <h2>User {userId}: Send Match Request</h2>
-      <button onClick={sendMatchRequest}>Send Match Request to B</button>
+      <h2>User A: Connected</h2>
       <p>{message}</p>
     </div>
   );
 };
 
-export default MeetingRequest;
+export default MeetingRequestA;
